@@ -13,6 +13,6 @@ public class PasswordGenerator {
         String encodedPassword = encoder.encode(password);
         
         System.out.println("原始密码: " + password);
-        System.out.println("加密后的密码: " + encodedPassword);
+        System.out.println("test加密后的密码: " + encodedPassword);
     }
 }
