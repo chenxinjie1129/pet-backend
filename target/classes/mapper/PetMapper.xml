@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.petshome.api.repository.PetMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.petshome.api.model.entity.Pet">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="type" property="type" />
+        <result column="breed" property="breed" />
+        <result column="gender" property="gender" />
+        <result column="age" property="age" />
+        <result column="weight" property="weight" />
+        <result column="sterilized" property="sterilized" />
+        <result column="avatar" property="avatar" />
+        <result column="user_id" property="userId" />
+        <result column="status" property="status" />
+        <result column="remark" property="remark" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 公共列 -->
+    <sql id="Base_Column_List">
+        id, name, type, breed, gender, age, weight, sterilized, avatar, user_id, status, remark,
+        create_time, update_time
+    </sql>
+
+    <!-- 根据ID查询宠物 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List" />
+        FROM t_pet
+        WHERE id = #{id}
+    </select>
+
+    <!-- 根据用户ID查询宠物列表 -->
+    <select id="selectByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List" />
+        FROM t_pet
+        WHERE user_id = #{userId}
+        ORDER BY id DESC
+    </select>
+
+    <!-- 查询所有宠物 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List" />
+        FROM t_pet
+        ORDER BY id DESC
+    </select>
+
+    <!-- 插入宠物 -->
+    <insert id="insert" parameterType="com.petshome.api.model.entity.Pet" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_pet (
+            name, type, breed, gender, age, weight, sterilized, avatar, user_id, status, remark,
+            create_time, update_time
+        ) VALUES (
+            #{name}, #{type}, #{breed}, #{gender}, #{age}, #{weight}, #{sterilized}, #{avatar}, #{userId}, #{status}, #{remark},
+            #{createTime}, #{updateTime}
+        )
+    </insert>
+
+    <!-- 更新宠物 -->
+    <update id="update" parameterType="com.petshome.api.model.entity.Pet">
+        UPDATE t_pet
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="breed != null">breed = #{breed},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="age != null">age = #{age},</if>
+            <if test="weight != null">weight = #{weight},</if>
+            <if test="sterilized != null">sterilized = #{sterilized},</if>
+            <if test="avatar != null">avatar = #{avatar},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = #{updateTime}
+        </set>
+        WHERE id = #{id} AND user_id = #{userId}
+    </update>
+
+    <!-- 删除宠物 -->
+    <delete id="deleteById">
+        DELETE FROM t_pet WHERE id = #{id} AND user_id = #{userId}
+    </delete>
+
+    <!-- 批量删除宠物 -->
+    <delete id="deleteByIds">
+        DELETE FROM t_pet WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND user_id = #{userId}
+    </delete>
+
+    <!-- 更新宠物状态 -->
+    <update id="updateStatus">
+        UPDATE t_pet
+        SET status = #{status}, update_time = NOW()
+        WHERE id = #{id} AND user_id = #{userId}
+    </update>
+
+</mapper>

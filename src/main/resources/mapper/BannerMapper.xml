@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.petshome.api.repository.BannerMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.petshome.api.model.entity.Banner">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="image_url" property="imageUrl" />
+        <result column="link_url" property="linkUrl" />
+        <result column="sort" property="sort" />
+        <result column="status" property="status" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 公共列 -->
+    <sql id="Base_Column_List">
+        id, title, image_url, link_url, sort, status, create_time, update_time
+    </sql>
+
+    <!-- 根据ID查询轮播图 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List" />
+        FROM t_banner
+        WHERE id = #{id}
+    </select>
+
+    <!-- 查询所有轮播图 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List" />
+        FROM t_banner
+        ORDER BY sort ASC, id DESC
+    </select>
+
+    <!-- 查询启用的轮播图 -->
+    <select id="selectActive" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List" />
+        FROM t_banner
+        WHERE status = 1
+        ORDER BY sort ASC, id DESC
+    </select>
+
+    <!-- 插入轮播图 -->
+    <insert id="insert" parameterType="com.petshome.api.model.entity.Banner" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_banner (
+            title, image_url, link_url, sort, status, create_time, update_time
+        ) VALUES (
+            #{title}, #{imageUrl}, #{linkUrl}, #{sort}, #{status}, #{createTime}, #{updateTime}
+        )
+    </insert>
+
+    <!-- 更新轮播图 -->
+    <update id="update" parameterType="com.petshome.api.model.entity.Banner">
+        UPDATE t_banner
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="imageUrl != null">image_url = #{imageUrl},</if>
+            <if test="linkUrl != null">link_url = #{linkUrl},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="status != null">status = #{status},</if>
+            update_time = #{updateTime}
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除轮播图 -->
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM t_banner WHERE id = #{id}
+    </delete>
+
+    <!-- 批量删除轮播图 -->
+    <delete id="deleteByIds">
+        DELETE FROM t_banner WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 更新轮播图状态 -->
+    <update id="updateStatus">
+        UPDATE t_banner
+        SET status = #{status}, update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+</mapper>
