@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.petshome.api.repository.ProductMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.petshome.api.model.entity.Product">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="category_id" property="categoryId" />
+        <result column="brand" property="brand" />
+        <result column="price" property="price" />
+        <result column="original_price" property="originalPrice" />
+        <result column="stock" property="stock" />
+        <result column="sales" property="sales" />
+        <result column="main_image" property="mainImage" />
+        <result column="album" property="album" />
+        <result column="description" property="description" />
+        <result column="detail" property="detail" />
+        <result column="status" property="status" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 公共列 -->
+    <sql id="Base_Column_List">
+        id, name, category_id, brand, price, original_price, stock, sales, main_image, 
+        album, description, detail, status, create_time, update_time
+    </sql>
+
+    <!-- 根据ID查询商品 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List" />
+        FROM t_product
+        WHERE id = #{id}
+    </select>
+
+    <!-- 查询所有商品 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List" />
+        FROM t_product
+        WHERE status = 1
+        ORDER BY id DESC
+    </select>
+
+    <!-- 根据分类ID查询商品 -->
+    <select id="selectByCategoryId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List" />
+        FROM t_product
+        WHERE category_id = #{categoryId} AND status = 1
+        ORDER BY id DESC
+    </select>
+
+    <!-- 根据关键词搜索商品 -->
+    <select id="selectByKeyword" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List" />
+        FROM t_product
+        WHERE (name LIKE CONCAT('%', #{keyword}, '%') OR description LIKE CONCAT('%', #{keyword}, '%')) AND status = 1
+        ORDER BY id DESC
+    </select>
+
+    <!-- 分页查询商品 -->
+    <select id="selectByPage" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List" />
+        FROM t_product
+        <where>
+            status = 1
+            <if test="categoryId != null">
+                AND category_id = #{categoryId}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (name LIKE CONCAT('%', #{keyword}, '%') OR description LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY id DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 查询商品总数 -->
+    <select id="countByCondition" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM t_product
+        <where>
+            status = 1
+            <if test="categoryId != null">
+                AND category_id = #{categoryId}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (name LIKE CONCAT('%', #{keyword}, '%') OR description LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询热门商品 -->
+    <select id="selectHotProducts" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List" />
+        FROM t_product
+        WHERE status = 1
+        ORDER BY sales DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 插入商品 -->
+    <insert id="insert" parameterType="com.petshome.api.model.entity.Product" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_product (
+            name, category_id, brand, price, original_price, stock, sales, main_image, 
+            album, description, detail, status, create_time, update_time
+        ) VALUES (
+            #{name}, #{categoryId}, #{brand}, #{price}, #{originalPrice}, #{stock}, #{sales}, #{mainImage}, 
+            #{album}, #{description}, #{detail}, #{status}, NOW(), NOW()
+        )
+    </insert>
+
+    <!-- 更新商品 -->
+    <update id="update" parameterType="com.petshome.api.model.entity.Product">
+        UPDATE t_product
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="brand != null">brand = #{brand},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="originalPrice != null">original_price = #{originalPrice},</if>
+            <if test="stock != null">stock = #{stock},</if>
+            <if test="sales != null">sales = #{sales},</if>
+            <if test="mainImage != null">main_image = #{mainImage},</if>
+            <if test="album != null">album = #{album},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="detail != null">detail = #{detail},</if>
+            <if test="status != null">status = #{status},</if>
+            update_time = NOW()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除商品 -->
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM t_product
+        WHERE id = #{id}
+    </delete>
+
+    <!-- 更新商品状态 -->
+    <update id="updateStatus">
+        UPDATE t_product
+        SET status = #{status}, update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 更新商品库存 -->
+    <update id="updateStock">
+        UPDATE t_product
+        SET stock = #{stock}, update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 增加商品销量 -->
+    <update id="increaseSales">
+        UPDATE t_product
+        SET sales = sales + #{sales}, update_time = NOW()
+        WHERE id = #{id}
+    </update>
+</mapper>

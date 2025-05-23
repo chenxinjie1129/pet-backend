@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.petshome.api.repository.CartItemMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.petshome.api.model.entity.CartItem">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="product_id" property="productId" />
+        <result column="quantity" property="quantity" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 结果映射（包含商品信息） -->
+    <resultMap id="CartItemWithProductMap" type="com.petshome.api.model.entity.CartItem" extends="BaseResultMap">
+        <association property="product" javaType="com.petshome.api.model.entity.Product">
+            <id column="p_id" property="id" />
+            <result column="p_name" property="name" />
+            <result column="p_price" property="price" />
+            <result column="p_original_price" property="originalPrice" />
+            <result column="p_main_image" property="mainImage" />
+            <result column="p_stock" property="stock" />
+        </association>
+    </resultMap>
+
+    <!-- 公共列 -->
+    <sql id="Base_Column_List">
+        id, user_id, product_id, quantity, create_time, update_time
+    </sql>
+
+    <!-- 根据ID查询购物车项 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List" />
+        FROM t_cart_item
+        WHERE id = #{id}
+    </select>
+
+    <!-- 根据用户ID查询购物车项（包含商品信息） -->
+    <select id="selectByUserId" parameterType="java.lang.Long" resultMap="CartItemWithProductMap">
+        SELECT 
+            c.id, c.user_id, c.product_id, c.quantity, c.create_time, c.update_time,
+            p.id as p_id, p.name as p_name, p.price as p_price, p.original_price as p_original_price, 
+            p.main_image as p_main_image, p.stock as p_stock
+        FROM t_cart_item c
+        LEFT JOIN t_product p ON c.product_id = p.id
+        WHERE c.user_id = #{userId}
+        ORDER BY c.create_time DESC
+    </select>
+
+    <!-- 根据用户ID和商品ID查询购物车项 -->
+    <select id="selectByUserIdAndProductId" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List" />
+        FROM t_cart_item
+        WHERE user_id = #{userId} AND product_id = #{productId}
+    </select>
+
+    <!-- 插入购物车项 -->
+    <insert id="insert" parameterType="com.petshome.api.model.entity.CartItem" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_cart_item (
+            user_id, product_id, quantity, create_time, update_time
+        ) VALUES (
+            #{userId}, #{productId}, #{quantity}, NOW(), NOW()
+        )
+    </insert>
+
+    <!-- 更新购物车项 -->
+    <update id="update" parameterType="com.petshome.api.model.entity.CartItem">
+        UPDATE t_cart_item
+        <set>
+            <if test="quantity != null">quantity = #{quantity},</if>
+            update_time = NOW()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 更新购物车项数量 -->
+    <update id="updateQuantity">
+        UPDATE t_cart_item
+        SET quantity = #{quantity}, update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除购物车项 -->
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM t_cart_item
+        WHERE id = #{id}
+    </delete>
+
+    <!-- 根据用户ID删除购物车项 -->
+    <delete id="deleteByUserId" parameterType="java.lang.Long">
+        DELETE FROM t_cart_item
+        WHERE user_id = #{userId}
+    </delete>
+
+    <!-- 根据用户ID和商品ID删除购物车项 -->
+    <delete id="deleteByUserIdAndProductId">
+        DELETE FROM t_cart_item
+        WHERE user_id = #{userId} AND product_id = #{productId}
+    </delete>
+
+    <!-- 根据用户ID和购物车项ID列表删除购物车项 -->
+    <delete id="deleteByUserIdAndIds">
+        DELETE FROM t_cart_item
+        WHERE user_id = #{userId} AND id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
