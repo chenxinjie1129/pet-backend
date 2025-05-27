@@ -8,19 +8,19 @@ import lombok.Getter;
  */
 @Getter
 public class BusinessException extends RuntimeException {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * 错误码
      */
     private final Integer code;
-    
+
     /**
      * 错误消息
      */
     private final String message;
-    
+
     /**
      * 构造函数
      * @param message 错误消息
@@ -29,7 +29,7 @@ public class BusinessException extends RuntimeException {
         this.code = ResultCode.ERROR.getCode();
         this.message = message;
     }
-    
+
     /**
      * 构造函数
      * @param code 错误码
@@ -39,7 +39,7 @@ public class BusinessException extends RuntimeException {
         this.code = code;
         this.message = message;
     }
-    
+
     /**
      * 构造函数
      * @param resultCode 结果枚举
@@ -48,7 +48,7 @@ public class BusinessException extends RuntimeException {
         this.code = resultCode.getCode();
         this.message = resultCode.getMessage();
     }
-    
+
     /**
      * 构造函数
      * @param resultCode 结果枚举
@@ -57,5 +57,22 @@ public class BusinessException extends RuntimeException {
     public BusinessException(ResultCode resultCode, String message) {
         this.code = resultCode.getCode();
         this.message = message;
+    }
+
+    /**
+     * 获取错误码
+     * @return 错误码
+     */
+    public Integer getCode() {
+        return code;
+    }
+
+    /**
+     * 获取错误消息
+     * @return 错误消息
+     */
+    @Override
+    public String getMessage() {
+        return message;
     }
 }

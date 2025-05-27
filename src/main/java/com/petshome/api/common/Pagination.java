@@ -42,4 +42,38 @@ public class Pagination implements Serializable {
      */
     @ApiModelProperty(value = "总条数", example = "200", position = 4)
     private Long totalPieces;
+
+    // 手动添加 getter 和 setter 方法，以防 Lombok 不起作用
+
+    public Integer getTotalPage() {
+        return totalPage;
+    }
+
+    public void setTotalPage(Integer totalPage) {
+        this.totalPage = totalPage;
+    }
+
+    public Integer getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(Integer currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    public Integer getPagePieces() {
+        return pagePieces;
+    }
+
+    public void setPagePieces(Integer pagePieces) {
+        this.pagePieces = pagePieces;
+    }
+
+    public Long getTotalPieces() {
+        return totalPieces;
+    }
+
+    public void setTotalPieces(Long totalPieces) {
+        this.totalPieces = totalPieces;
+    }
 }

@@ -59,4 +59,20 @@ public enum ResultCode {
         this.code = code;
         this.message = message;
     }
+
+    /**
+     * 获取响应码
+     * @return 响应码
+     */
+    public Integer getCode() {
+        return code;
+    }
+
+    /**
+     * 获取响应消息
+     * @return 响应消息
+     */
+    public String getMessage() {
+        return message;
+    }
 }

@@ -42,6 +42,70 @@ public class ApiResponse<T> implements Serializable {
     private Pagination pagination;
 
     /**
+     * 获取状态码
+     * @return 状态码
+     */
+    public Integer getCode() {
+        return code;
+    }
+
+    /**
+     * 设置状态码
+     * @param code 状态码
+     */
+    public void setCode(Integer code) {
+        this.code = code;
+    }
+
+    /**
+     * 获取消息
+     * @return 消息
+     */
+    public String getMessage() {
+        return message;
+    }
+
+    /**
+     * 设置消息
+     * @param message 消息
+     */
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    /**
+     * 获取数据
+     * @return 数据
+     */
+    public T getData() {
+        return data;
+    }
+
+    /**
+     * 设置数据
+     * @param data 数据
+     */
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    /**
+     * 获取分页信息
+     * @return 分页信息
+     */
+    public Pagination getPagination() {
+        return pagination;
+    }
+
+    /**
+     * 设置分页信息
+     * @param pagination 分页信息
+     */
+    public void setPagination(Pagination pagination) {
+        this.pagination = pagination;
+    }
+
+    /**
      * 构造函数
      * @param code 状态码
      * @param message 消息
