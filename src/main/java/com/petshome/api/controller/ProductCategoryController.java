@@ -44,27 +44,7 @@ public class ProductCategoryController {
         return ApiResponse.success(category);
     }
 
-    /**
-     * 根据父分类ID获取子分类
-     */
-    @ApiOperation("根据父分类ID获取子分类")
-    @GetMapping("/parent/{parentId}")
-    public ApiResponse<List<ProductCategory>> getCategoriesByParentId(
-            @ApiParam(value = "父分类ID", required = true) @PathVariable Long parentId) {
-        List<ProductCategory> categories = productCategoryService.getByParentId(parentId);
-        return ApiResponse.success(categories);
-    }
 
-    /**
-     * 根据级别获取分类
-     */
-    @ApiOperation("根据级别获取分类")
-    @GetMapping("/level/{level}")
-    public ApiResponse<List<ProductCategory>> getCategoriesByLevel(
-            @ApiParam(value = "级别", required = true) @PathVariable Integer level) {
-        List<ProductCategory> categories = productCategoryService.getByLevel(level);
-        return ApiResponse.success(categories);
-    }
 
     /**
      * 添加商品分类

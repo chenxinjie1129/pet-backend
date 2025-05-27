@@ -29,36 +29,22 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         return productCategoryMapper.selectAll();
     }
 
-    @Override
-    public List<ProductCategory> getByParentId(Long parentId) {
-        return productCategoryMapper.selectByParentId(parentId);
-    }
 
-    @Override
-    public List<ProductCategory> getByLevel(Integer level) {
-        return productCategoryMapper.selectByLevel(level);
-    }
 
     @Override
     @Transactional
     public ProductCategory add(ProductCategory category) {
         // 设置默认值
-        if (category.getParentId() == null) {
-            category.setParentId(0L);
-        }
-        if (category.getLevel() == null) {
-            category.setLevel(1);
-        }
         if (category.getSort() == null) {
             category.setSort(0);
         }
         if (category.getStatus() == null) {
             category.setStatus(1);
         }
-        
+
         // 插入数据
         productCategoryMapper.insert(category);
-        
+
         return category;
     }
 
@@ -70,10 +56,10 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         if (existingCategory == null) {
             throw new BusinessException("分类不存在");
         }
-        
+
         // 更新数据
         productCategoryMapper.update(category);
-        
+
         return productCategoryMapper.selectById(category.getId());
     }
 
@@ -85,13 +71,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         if (existingCategory == null) {
             throw new BusinessException("分类不存在");
         }
-        
-        // 检查是否有子分类
-        List<ProductCategory> children = productCategoryMapper.selectByParentId(id);
-        if (children != null && !children.isEmpty()) {
-            throw new BusinessException("该分类下有子分类，无法删除");
-        }
-        
+
         // 删除分类
         return productCategoryMapper.deleteById(id) > 0;
     }
@@ -104,7 +84,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         if (existingCategory == null) {
             throw new BusinessException("分类不存在");
         }
-        
+
         // 更新状态
         return productCategoryMapper.updateStatus(id, status) > 0;
     }

@@ -61,8 +61,6 @@ CREATE TABLE IF NOT EXISTS `t_banner` (
 CREATE TABLE IF NOT EXISTS `t_product_category` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '分类ID',
   `name` varchar(64) NOT NULL COMMENT '分类名称',
-  `parent_id` bigint(20) DEFAULT '0' COMMENT '父分类ID，0表示一级分类',
-  `level` tinyint(1) DEFAULT '1' COMMENT '分类级别：1-一级，2-二级，3-三级',
   `sort` int(11) DEFAULT '0' COMMENT '排序值，越小越靠前',
   `icon` varchar(255) DEFAULT NULL COMMENT '图标',
   `status` tinyint(1) DEFAULT '1' COMMENT '状态：0-禁用，1-启用',
@@ -115,17 +113,17 @@ VALUES
 ('宠物用品大促销', 'https://petshome.oss-cn-beijing.aliyuncs.com/banner/banner2.jpg', '/product/list', 2, 1, NOW(), NOW()),
 ('宠物健康服务', 'https://petshome.oss-cn-beijing.aliyuncs.com/banner/banner3.jpg', '/service', 3, 1, NOW(), NOW());
 
-INSERT INTO `t_product_category` (`name`, `parent_id`, `level`, `sort`, `icon`, `status`, `create_time`, `update_time`)
+INSERT INTO `t_product_category` (`name`, `sort`, `icon`, `status`, `create_time`, `update_time`)
 VALUES
-('猫咪用品', 0, 1, 1, 'https://petshome.oss-cn-beijing.aliyuncs.com/category/cat.png', 1, NOW(), NOW()),
-('狗狗用品', 0, 1, 2, 'https://petshome.oss-cn-beijing.aliyuncs.com/category/dog.png', 1, NOW(), NOW()),
-('小宠用品', 0, 1, 3, 'https://petshome.oss-cn-beijing.aliyuncs.com/category/small.png', 1, NOW(), NOW()),
-('猫粮', 1, 2, 1, NULL, 1, NOW(), NOW()),
-('猫砂', 1, 2, 2, NULL, 1, NOW(), NOW()),
-('猫玩具', 1, 2, 3, NULL, 1, NOW(), NOW()),
-('狗粮', 2, 2, 1, NULL, 1, NOW(), NOW()),
-('狗窝', 2, 2, 2, NULL, 1, NOW(), NOW()),
-('狗玩具', 2, 2, 3, NULL, 1, NOW(), NOW());
+('猫咪用品', 1, 'https://petshome.oss-cn-beijing.aliyuncs.com/category/cat.png', 1, NOW(), NOW()),
+('狗狗用品', 2, 'https://petshome.oss-cn-beijing.aliyuncs.com/category/dog.png', 1, NOW(), NOW()),
+('小宠用品', 3, 'https://petshome.oss-cn-beijing.aliyuncs.com/category/small.png', 1, NOW(), NOW()),
+('猫粮', 4, 'https://petshome.oss-cn-beijing.aliyuncs.com/category/cat-food.png', 1, NOW(), NOW()),
+('猫砂', 5, 'https://petshome.oss-cn-beijing.aliyuncs.com/category/cat-litter.png', 1, NOW(), NOW()),
+('猫玩具', 6, 'https://petshome.oss-cn-beijing.aliyuncs.com/category/cat-toy.png', 1, NOW(), NOW()),
+('狗粮', 7, 'https://petshome.oss-cn-beijing.aliyuncs.com/category/dog-food.png', 1, NOW(), NOW()),
+('狗窝', 8, 'https://petshome.oss-cn-beijing.aliyuncs.com/category/dog-house.png', 1, NOW(), NOW()),
+('狗玩具', 9, 'https://petshome.oss-cn-beijing.aliyuncs.com/category/dog-toy.png', 1, NOW(), NOW());
 
 -- 插入测试商品数据
 INSERT INTO `t_product` (`name`, `category_id`, `brand`, `price`, `original_price`, `stock`, `sales`, `main_image`, `description`, `status`, `create_time`, `update_time`)

@@ -6,8 +6,6 @@
     <resultMap id="BaseResultMap" type="com.petshome.api.model.entity.ProductCategory">
         <id column="id" property="id" />
         <result column="name" property="name" />
-        <result column="parent_id" property="parentId" />
-        <result column="level" property="level" />
         <result column="sort" property="sort" />
         <result column="icon" property="icon" />
         <result column="status" property="status" />
@@ -17,12 +15,12 @@
 
     <!-- 公共列 -->
     <sql id="Base_Column_List">
-        id, name, parent_id, level, sort, icon, status, create_time, update_time
+        id, name, sort, icon, status, create_time, update_time
     </sql>
 
     <!-- 根据ID查询商品分类 -->
     <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        SELECT 
+        SELECT
         <include refid="Base_Column_List" />
         FROM t_product_category
         WHERE id = #{id}
@@ -30,36 +28,20 @@
 
     <!-- 查询所有商品分类 -->
     <select id="selectAll" resultMap="BaseResultMap">
-        SELECT 
+        SELECT
         <include refid="Base_Column_List" />
         FROM t_product_category
         ORDER BY sort ASC
     </select>
 
-    <!-- 根据父分类ID查询子分类 -->
-    <select id="selectByParentId" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        SELECT 
-        <include refid="Base_Column_List" />
-        FROM t_product_category
-        WHERE parent_id = #{parentId}
-        ORDER BY sort ASC
-    </select>
 
-    <!-- 根据级别查询分类 -->
-    <select id="selectByLevel" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-        SELECT 
-        <include refid="Base_Column_List" />
-        FROM t_product_category
-        WHERE level = #{level}
-        ORDER BY sort ASC
-    </select>
 
     <!-- 插入商品分类 -->
     <insert id="insert" parameterType="com.petshome.api.model.entity.ProductCategory" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO t_product_category (
-            name, parent_id, level, sort, icon, status, create_time, update_time
+            name, sort, icon, status, create_time, update_time
         ) VALUES (
-            #{name}, #{parentId}, #{level}, #{sort}, #{icon}, #{status}, NOW(), NOW()
+            #{name}, #{sort}, #{icon}, #{status}, NOW(), NOW()
         )
     </insert>
 
@@ -68,8 +50,6 @@
         UPDATE t_product_category
         <set>
             <if test="name != null">name = #{name},</if>
-            <if test="parentId != null">parent_id = #{parentId},</if>
-            <if test="level != null">level = #{level},</if>
             <if test="sort != null">sort = #{sort},</if>
             <if test="icon != null">icon = #{icon},</if>
             <if test="status != null">status = #{status},</if>
